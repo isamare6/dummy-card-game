@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ดัมมี่</title>
+<link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--felt:#0f5a63;--felt2:#0a444b;--wood:#8a5a2b;--gold:#f7c948;--card:#fbf8ef;--red:#c8302f;--blk:#1d1d27;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html,body{margin:0;height:100%}
+body{background:radial-gradient(circle at 50% 0,#4d2c8f,#1b1240 70%);color:#fff;font-family:'Mitr',system-ui,sans-serif;display:flex;justify-content:center;overflow-x:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+#app{width:100%;height:100%;padding:3px;display:flex;flex-direction:column}
+.table{flex:1;min-height:0;border:4px solid var(--wood);border-radius:22px;background:radial-gradient(circle,var(--felt),var(--felt2));display:grid;grid-template-columns:1.4fr 2.4fr 1.4fr;grid-template-rows:auto 1fr auto;grid-template-areas:". top ." "left mid right" "hand hand hand";gap:6px;padding:4px;position:relative;box-shadow:inset 0 0 40px #0008}
+.pod{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;text-align:center;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.pod.top{grid-area:top;flex-direction:row;justify-content:center;gap:14px}.pod.left{grid-area:left;align-self:start;min-height:0;overflow-y:auto}.pod.right{grid-area:right;align-self:start;min-height:0;overflow-y:auto}
+.pcol{display:flex;flex-direction:column;align-items:center;gap:2px}.pm{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:4px}.pod.top .pm{max-width:420px;margin:0}
+.av{width:46px;height:46px;border-radius:50%;background:#2b2150;border:3px solid #cdbf9a;display:grid;place-items:center;font-size:24px}
+.pod.on .av{border-color:var(--gold);box-shadow:0 0 14px var(--gold)}
+.sc{font-weight:500}.sc.neg{color:#ff8a80}.sc.pos{color:#8affb0}
+.fan{display:flex;justify-content:center;flex-wrap:nowrap;max-width:100%;padding:2px 0}
+.fan .c{margin:0 -17px 0 0}.fan .c:last-child{margin-right:0}
+.mid{grid-area:mid;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:0;overflow-y:auto}
+.piles{display:flex;flex-direction:column;gap:10px;align-items:center;width:100%}
+.pile{display:flex;flex-direction:column;align-items:center;font-size:11px;gap:3px}
+.say{min-height:2.6em;font-size:13px;text-align:center;max-width:34em;color:#e9f6f2}
+.melds{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;overflow-y:auto;min-height:0;width:100%}
+.meld{background:#0003;border:2px dashed #fff4;border-radius:10px;padding:3px 4px;display:flex;align-items:center;gap:2px}
+.meld.tgt{border-color:var(--gold);cursor:pointer}
+.meld .o{font-size:13px;margin-right:2px}
+.meld .c{margin-left:-6px}.meld .c:first-of-type{margin-left:0}
+.c{width:66px;height:94px;border-radius:9px;background:var(--card);color:var(--blk);font-weight:500;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:26px;line-height:1;border:0;padding:0;box-shadow:0 2px 4px #0006;flex:none;transition:transform .12s}
+.c i{font-style:normal;font-size:30px}.c.r{color:var(--red)}
+.c.b{background:repeating-linear-gradient(45deg,#6b3fd0 0 6px,#5a30b8 6px 12px);border:3px solid #fff}
+.c.s{width:30px;height:42px;font-size:12px;border-radius:5px}.c.s i{font-size:13px}
+.c.m{width:48px;height:68px;font-size:18px;border-radius:7px}.c.m i{font-size:21px}.c.m.top{outline:3px solid var(--gold)}
+.dis{display:flex;flex-wrap:wrap;justify-content:center;max-width:100%;max-height:170px;overflow-y:auto;padding:4px 12px 0 4px}.dis .c{margin:0 -8px 6px 0}
+.dis.pk .c{cursor:pointer}.dis.pk .c:hover,.dis.pk .c:hover~.c{outline:3px solid var(--gold)}
+.c.e{background:#0003;box-shadow:none;border:2px dashed #fff4}
+button.c:focus-visible,.btn:focus-visible,.meld:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.c.sel{transform:translateY(-14px);outline:3px solid var(--gold)}
+.hz{grid-area:hand;display:flex;flex-direction:column;align-items:center;gap:8px;padding-top:6px}
+.hand{display:flex;justify-content:center;padding:16px 14px 0;max-width:100%;overflow-x:auto}
+.hand .c{margin-left:-16px}.hand .c:first-child{margin-left:0}.hand .c[draggable]{cursor:grab}
+.bar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center}
+.btn{border:0;border-radius:999px;padding:8px 16px;background:var(--gold);color:#2a1d00;font-weight:500}
+.btn.alt{background:#fff2;color:#fff}.btn:disabled{opacity:.4;cursor:default}
+.me{display:flex;align-items:center;gap:8px;font-size:13px}
+.me .av{width:34px;height:34px;font-size:18px}
+.ov{position:absolute;inset:0;background:#000b;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:16px;z-index:5}
+.title{font-size:52px;font-weight:500;color:var(--gold);text-shadow:0 3px 0 #7a4b00,0 0 24px #f7c94866;margin:0}
+.knock{font-size:60px;font-weight:500;color:var(--gold);-webkit-text-stroke:2px #7a4b00;text-shadow:0 4px 0 #7a4b00}
+.rules{font-size:13px;max-width:30em;color:#d9d3f0;line-height:1.6;margin:0}
+.rows{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+@media(max-width:560px){.c{width:50px;height:72px;font-size:20px}.c i{font-size:23px}.hand .c{margin-left:-20px}.table{padding:3px;border-width:4px}.av{width:38px;height:38px}}
+.wm{position:fixed;right:calc(12px + env(safe-area-inset-right,0px));bottom:calc(1px + env(safe-area-inset-bottom,0px));font-size:10px;letter-spacing:.1em;color:#fff;opacity:.5;text-shadow:0 1px 2px #000;pointer-events:none;z-index:9;font-family:system-ui,sans-serif}
+.ph{font-size:26px;font-weight:500;color:var(--gold);margin:0}
+.pg{max-width:36em;text-align:left;font-size:14px;line-height:1.7}.pg ul{padding-left:1.2em;margin:2px 0 8px}.pg b{color:var(--gold);font-weight:500}
+.dv{display:grid;grid-template-columns:auto 1fr;gap:10px 18px;text-align:left;font-size:16px;margin:0}.dv dt{color:var(--gold)}.dv dd{margin:0}
+.action-banner{position:absolute;top:22%;left:50%;transform:translate(-50%,-50%);font-size:40px;font-weight:500;color:var(--gold);-webkit-text-stroke:2px #7a4b00;text-shadow:0 0 25px #f60;z-index:10;pointer-events:none;animation:pop .8s ease-out both;width:max-content;max-width:92%;text-align:center}
+@keyframes pop{0%{transform:translate(-50%,-50%) scale(.3);opacity:0}70%{transform:translate(-50%,-50%) scale(1.1);opacity:1}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
+.tag{font-size:16px;color:var(--gold)}.tag.bad{color:#ff8a80}
+.sd{display:flex;flex-direction:column;gap:6px;width:100%;max-width:640px;max-height:36vh;overflow-y:auto}
+.sdr{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#fff1;border-radius:8px;padding:4px 8px;font-size:13px}
+.sdr .cs{display:flex;overflow-x:auto;gap:2px}
+.action-banner{position:absolute;top:22%;left:50%;transform:translate(-50%,-50%);font-size:40px;font-weight:500;color:var(--gold);-webkit-text-stroke:2px #7a4b00;text-shadow:0 0 25px #f60;z-index:10;pointer-events:none;animation:pop .8s ease-out both;width:max-content;max-width:92%;text-align:center}
+@keyframes pop{0%{transform:translate(-50%,-50%) scale(.3);opacity:0}70%{transform:translate(-50%,-50%) scale(1.1);opacity:1}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
+.tag{font-size:16px;color:var(--gold)}.tag.bad{color:#ff8a80}
+.sd{display:flex;flex-direction:column;gap:6px;width:100%;max-width:640px;max-height:36vh;overflow-y:auto}
+.sdr{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#fff1;border-radius:8px;padding:4px 8px;font-size:13px}
+.sdr .cs{display:flex;overflow-x:auto;gap:2px}
+.c{position:relative}
+.c.sp::before{content:'★';position:absolute;top:1px;right:3px;font-size:11px;color:#e0a800;line-height:1}
+.c.head{outline:2px solid #e0359b}
+.c.head::after{content:'หัว';position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:#e0359b;color:#fff;font-size:10px;line-height:14px;padding:0 5px;border-radius:7px;z-index:1}
+.dis{padding-top:12px}
+.shown{display:flex;justify-content:center;gap:2px}
+.bc{display:flex;gap:4px;justify-content:center;margin-top:6px}.bc .c{-webkit-text-stroke:0;text-shadow:none}
+.c.s.head::after{font-size:8px;top:-8px;padding:0 3px;line-height:11px}
+.pausebar{position:absolute;top:8px;left:50%;transform:translateX(-50%);background:#000a;padding:6px 14px;border-radius:999px;font-size:13px;z-index:15;pointer-events:none;white-space:nowrap}
+.hz .melds{max-height:150px}
+.lbl{font-size:10px;color:var(--gold);margin-right:4px;white-space:nowrap}
+.meld.lay{border-color:var(--gold)}
+.neg{color:#ff8a80}
+.c.nw:not(.sel){outline:3px solid #35c8ff}
+.c.must:not(.sel){outline:3px dashed #ff9d2e}
+.mz{min-height:44px;border:1px dashed #fff3;border-radius:10px;padding:2px 6px;align-items:center;cursor:pointer}
+.mz:empty::before{content:'พื้นที่ของคุณ (ลงชุด/ฝากไพ่ที่นี่)';opacity:.5;font-size:12px;width:100%;text-align:center}
+.win-pct{font-size:10px;color:var(--gold);background:#0006;padding:1px 6px;border-radius:6px}
+.dk{display:flex;flex-direction:column;align-items:center;font-size:9px;opacity:.9}
+.btn.on{background:#35c8ff;color:#00212b}
+
+/* ===== ปรับหน้าจอมือถือแนวนอนให้ใช้พื้นที่เต็มจอ ===== */
+html, body {
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  margin: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+body {
+  min-width: 0;
+  min-height: 0;
+  -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
+}
+#app {
+  width: 100vw;
+  height: 100%;
+  height: 100dvh;
+  min-width: 0;
+  min-height: 0;
+  padding:
+    env(safe-area-inset-top, 0px)
+    env(safe-area-inset-right, 0px)
+    env(safe-area-inset-bottom, 0px)
+    env(safe-area-inset-left, 0px);
+}
+.table {
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+}
+.hand, .dis, .mid, .melds, .pod.left, .pod.right {
+  min-width: 0;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+button, .meld {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* โทรศัพท์แนวนอน */
+@media (orientation: landscape) and (max-height: 600px) {
+  #app { padding: 2px; }
+  .table {
+    border-width: 3px;
+    border-radius: 10px;
+    grid-template-columns: minmax(76px, 1.15fr) minmax(120px, 2.4fr) minmax(76px, 1.15fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: 3px;
+    padding: 3px;
+  }
+  .pod { font-size: 10px; gap: 1px; }
+  .pod.top { gap: 8px; }
+  .av { width: 30px; height: 30px; border-width: 2px; font-size: 17px; }
+  .pod .fan .c.s { width: 18px; height: 26px; font-size: 8px; }
+  .pod .fan .c.s i { font-size: 9px; }
+  .pm { gap: 2px; margin-top: 2px; }
+  .c { width: 40px; height: 57px; border-radius: 6px; font-size: 17px; }
+  .c i { font-size: 19px; }
+  .c.s { width: 23px; height: 32px; font-size: 9px; border-radius: 3px; }
+  .c.s i { font-size: 10px; }
+  .c.m { width: 34px; height: 48px; font-size: 13px; border-radius: 5px; }
+  .c.m i { font-size: 15px; }
+  .fan .c { margin-right: -12px; }
+  .mid { gap: 3px; padding: 0 2px; }
+  .piles { flex-direction: row; justify-content: center; gap: 8px; }
+  .pile { font-size: 9px; gap: 2px; }
+  .say { min-height: 1.5em; max-width: 100%; font-size: 10px; line-height: 1.25; }
+  .dis { max-height: 23vh; padding: 8px 5px 0; }
+  .dis .c { margin-right: -5px; margin-bottom: 3px; }
+  .hz { gap: 2px; padding-top: 2px; min-height: 0; }
+  .hz .melds { max-height: 54px; overflow-x: auto; flex-wrap: nowrap; justify-content: flex-start; }
+  .meld { padding: 2px; border-radius: 5px; gap: 1px; }
+  .meld .c { margin-left: -8px; }
+  .meld .c:first-of-type { margin-left: 0; }
+  .me { gap: 4px; font-size: 10px; }
+  .me .av { width: 24px; height: 24px; font-size: 14px; }
+  .hand { justify-content: flex-start; width: 100%; padding: 12px 8px 0; overflow-x: auto; overflow-y: visible; }
+  .hand .c { margin-left: -15px; }
+  .hand .c:first-child { margin-left: 0; }
+  .c.sel { transform: translateY(-8px); }
+  .bar { gap: 4px; flex-wrap: nowrap; max-width: 100%; }
+  .btn { padding: 5px 9px; font-size: 11px; line-height: 1.3; white-space: nowrap; }
+  .title { font-size: clamp(28px, 7vh, 42px); }
+  .knock { font-size: clamp(30px, 8vh, 46px); }
+  .rules { font-size: 11px; }
+  .ph { font-size: 20px; }
+  .pg { font-size: 11px; line-height: 1.5; }
+  .dv { font-size: 12px; gap: 6px 10px; }
+  .ov { padding: 8px; gap: 7px; border-radius: 8px; }
+  .sd { max-height: 25vh; }
+  .sdr { padding: 3px 5px; font-size: 10px; gap: 4px; }
+  .action-banner { top: 24%; font-size: clamp(22px, 6vh, 34px); -webkit-text-stroke: 1px #7a4b00; }
+  .wm { right: 5px; bottom: 1px; font-size: 8px; }
+}
+
+/* จอแนวนอนที่เตี้ยมาก เช่น โทรศัพท์บางรุ่น */
+@media (orientation: landscape) and (max-height: 400px) {
+  .table { grid-template-columns: minmax(65px, 1fr) minmax(110px, 2.2fr) minmax(65px, 1fr); gap: 2px; }
+  .c { width: 34px; height: 48px; font-size: 14px; }
+  .c i { font-size: 16px; }
+  .c.m { width: 29px; height: 41px; font-size: 11px; }
+  .c.m i { font-size: 13px; }
+  .hand .c { margin-left: -17px; }
+  .btn { padding: 4px 7px; font-size: 10px; }
+  .say { font-size: 9px; }
+  .me { font-size: 9px; }
+}
+
+</style>
+
+<meta name="theme-color" content="#0f5a63">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ดัมมี่">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+
+</head>
+<body>
+<div id="app"></div>
+<div class="wm" aria-hidden="true">ISAMARE1976</div>
+<script>
+const SU='♠♥♦♣',RK=['','A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const BOTS=[{n:'ปิ่นปิ่น',e:'🦊'},{n:'มิ้ม',e:'🐻'},{n:'ลุงหมี',e:'🐼'}];
+const app=document.getElementById('app');
+let G=null,nb=2,page=null,mode='coin',speed='normal',first='user',nextStart=0,RID=0,debug=false,WP=null;
+const SPD={slow:1800,normal:1200,fast:600},SPN={slow:'ช้า',normal:'ปกติ',fast:'เร็ว'};
+const D=()=>SPD[speed];
+const DEV={game:'ดัมมี่ (ชื่อชั่วคราว)',dev:'(รอระบุ)',date:'31 ตุลาคม 2026',ver:'1.4.2'};
+
+const R=c=>c.r==1?14:c.r;
+const isSp=c=>c.id==41||c.id==12||(!!G&&(c.id==G.headId||c.id==G.headTaken));
+const val=c=>isSp(c)?50:c.r==1?15:c.r>=10?10:5;
+const seq=r=>r.every((x,i)=>!i||x==r[i-1]+1);
+const isSet=a=>a.length>=3&&a.length<=4&&a.every(c=>c.r==a[0].r)&&new Set(a.map(c=>c.s)).size==a.length;
+const isRun=a=>a.length>=3&&new Set(a.map(c=>c.s)).size==1&&seq(a.map(R).sort((x,y)=>x-y));
+const ok=a=>isSet(a)||isRun(a);
+const sortMeld=a=>[...a].sort((x,y)=>R(x)-R(y)||x.s-y.s);
+const canLay=(m,c)=>ok([...m.cards,c]);
+function tryLay(m,c){let t=m.cards;for(const x of [...c].sort((a,b)=>R(a)-R(b))){if(!ok([...t,x]))return null;t=sortMeld([...t,x])}return t}
+const SPS=[{r:2,s:3},{r:12,s:0}];
+function exposed(m,i){const lo=Math.min(...m.map(R)),hi=Math.max(...m.map(R));
+  return SPS.some(sp=>{
+    if(G.players[i].hand.some(c=>c.r==sp.r&&c.s==sp.s)||G.melds.some(mm=>mm.cards.some(c=>c.r==sp.r&&c.s==sp.s)))return false;
+    if(isSet(m))return m[0].r==sp.r&&m.length<4&&!m.some(c=>c.s==sp.s);
+    if(m[0].s!=sp.s)return false;const q=sp.r;return q==lo-1||q==lo-2||q==hi+1||q==hi+2})}
+const near=(a,b)=>a.s==b.s&&Math.abs(R(a)-R(b))<=2;
+function useMeld(h,x,orig){const o=h.filter(c=>c!==x&&(c.r==x.r||near(c,x)));let best=null;for(let m=1;m<1<<o.length;m++){const s=[x];for(let i=0;i<o.length;i++)if(m>>i&1)s.push(o[i]);if(s.length>=3&&ok(s)&&(!orig||s.some(c=>orig.includes(c)))&&(!best||s.length>best.length))best=s}return best}
+function findMelds(h){h=[...h];const out=[];for(;;){let best=null;const n=h.length;for(let m=1;m<1<<n;m++){const sub=[];for(let i=0;i<n;i++)if(m>>i&1)sub.push(h[i]);if(sub.length>=3&&ok(sub)&&(!best||sub.length>best.length))best=sub}if(!best)return out;out.push(best);h=h.filter(c=>!best.includes(c))}}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+
+const me=()=>G.players[0];
+const canAct=()=>G&&!G.over&&!G.paused&&G.turn==0&&!(G.pend&&G.pend.length);
+const hm=i=>G.melds.some(m=>m.o==i);
+const meldable=c=>G.melds.some(m=>canLay(m,c));
+const hp=j=>G.players[j].hand.reduce((s,c)=>s+val(c),0);
+const picked=()=>me().hand.filter(c=>G.sel.has(c.id));
+const say=t=>{G.msg=t;render()};
+const later=(f,ms)=>{const r=G.rid;setTimeout(function chk(){if(!G||G.rid!=r||G.over)return;if(G.paused){setTimeout(chk,250);return}f()},ms)};
+function full(c){const p=G.discard;for(let i=0;i<p.length;i++)for(let j=i+1;j<p.length;j++)if(ok([c,p[i],p[j]]))return true;return false}
+function checkPick(hand,i){const x=G.discard[i],mm=useMeld([...hand,...G.discard.slice(i)],x,hand);return !!(mm&&hand.length+G.discard.length-i-mm.length>=1)}
+function anch(m,x,j){
+  const nb=isRun(m.cards)?m.cards.find(c=>c.s==x.s&&Math.abs(R(c)-R(x))==1):null;
+  if(!nb)return{lt:m.o,payer:m.o};
+  const ow=nb.lb==null?m.o:nb.lb;
+  return{lt:ow==j?(nb.lb==null?j:nb.lt):ow,payer:ow}}
+function restOf(j){const hand=[...G.players[j].hand],ms=findMelds(hand),used=new Set(ms.flat());let rest=hand.filter(c=>!used.has(c));
+  const tm=G.melds.map(m=>({cards:m.cards}));ms.forEach(m=>tm.push({cards:m}));
+  if(hm(j)||ms.length)for(let go=true;go;){go=false;for(const c of rest){const m=tm.find(m=>canLay(m,c));if(m){m.cards=[...m.cards,c];rest=rest.filter(x=>x!==c);go=true;break}}}
+  return rest}
+const readyToKnock=i=>restOf(i).length==1;
+function winPct(){const w=G.players.map((p,j)=>{const r=restOf(j),pts=r.reduce((a,c)=>a+val(c),0);return Math.exp(-0.6*Math.max(0,r.length-1))/(1+pts/80)});const t=w.reduce((a,b)=>a+b,0)||1;return w.map(x=>Math.round(x/t*100))}
+function payAll(from,amt){G.players.forEach((p,j)=>{if(j!=from){p.score+=amt;G.players[from].score-=amt}})}
+function recvAll(to,amt){G.players.forEach((p,j)=>{if(j!=to){p.score-=amt;G.players[to].score+=amt}})}
+const helper=(c,s)=>c.id!=s.id&&((c.r==s.r&&c.s!=s.s)||near(c,s));
+const shownBy=j=>G.players[j].hand.filter(c=>G.shown.includes(c.id));
+function takePile(pl,i){const x=G.discard[i];if(i==G.discard.length-1)G.stupidWho=G.lastDisc;const t=G.discard.splice(i);if(G.headId!=null&&t.some(c=>c.id==G.headId)){G.headTaken=G.headId;G.headId=null;t.forEach(c=>{if(c.id==G.headTaken)c.hd=true})}t.forEach((c,ix)=>{c.nw=true;c.mk=ix==0});G.scrollEnd=true;pl.hand.push(...t);return{x,t}}
+function born(i,fresh,mc,ow=i){
+  const p=G.players[i],n=G.players.length;
+  fresh.filter(isSp).forEach(cd=>{
+    const fx=cd.id==41||cd.id==12,hd=!!cd.hd,k=((fx?1:0)+(hd?1:0))||1;
+    const nm=hd&&fx?'หัวและสเปรโต (2 เด้ง)':hd?'หัว':'สเปรโต',per=200*k;
+    if(ow!=i){const amt=per*(n-1);G.players[ow].score-=amt;p.score+=amt;banner(p.n+' ฝาก'+nm+'! '+G.players[ow].n+' จ่ายคนเดียว '+amt);return}
+    const e=G.hot.find(h=>h.by!=i&&mc.some(x=>x.id==h.id)&&G.tc-h.tc<n);
+    if(e){G.hot=G.hot.filter(h=>h!==e);const amt=per*(n-1);G.players[e.by].score-=amt;p.score+=amt;banner(p.n+' เกิด'+nm+'! '+G.players[e.by].n+' '+e.kind+' จ่าย '+amt)}
+    else{recvAll(i,per);banner(p.n+' เกิด'+nm+'! +'+per*(n-1))}
+  })}
+function banner(t,cs){G.banner=t;G.bcs=cs||[];render();const r=G.rid;setTimeout(()=>{if(G&&G.rid==r){G.banner=null;G.bcs=[];render()}},cs?2800:1800)}
+
+function newGame(n){
+  G={players:[{n:'คุณ',e:'🙂',hand:[],score:0},...BOTS.slice(0,n).map(b=>({n:b.n,e:b.e,hand:[],score:0}))]};
+  G.players.forEach(p=>p.score=mode=='coin'?5000:0);
+  nextStart=first=='user'?0:(Math.random()*G.players.length|0);
+  round();
+}
+function round(){
+  const d=[];for(let s=0;s<4;s++)for(let r=1;r<=13;r++)d.push({r,s,id:s*13+r});shuffle(d);
+  const k=G.players.length==3?9:7;
+  G.players.forEach(p=>p.hand=d.splice(0,k));
+  Object.assign(G,{deck:d,discard:[d.pop()],melds:[],turn:nextStart,phase:'draw',sel:new Set(),over:null,broke:null,must:null,banner:null,stupidWho:null,lastDisc:null,noMeld:true,rid:++RID,start:G.players.map(p=>p.score),tc:0,hot:[],shown:[],pend:[],headTaken:null});
+  G.headId=G.discard[0].id;
+  const names=[],cs=[];
+  G.players.forEach((p,j)=>{const sp=p.hand.filter(c=>c.id==41||c.id==12);if(j==0)G.pend=sp.map(c=>c.id);else sp.forEach(c=>{G.shown.push(c.id);recvAll(j,200);names.push(p.n);cs.push(c)})});
+  G.msg=(names.length?names.join(', ')+' โชว์สเปรโต ได้คนละ 200 — ':'')+(G.turn==0?'ตาคุณ: จั่วไพ่จากกอง หรือเก็บไพ่จากกองทิ้ง':G.players[G.turn].n+' เริ่มก่อน');
+  G.paused=false;G.peek=null;G.dpeek=false;G.announced=false;
+  if(names.length)banner([...new Set(names)].join(', ')+' โชว์สเปรโต!',cs);else render();
+  if(G.turn&&!G.pend.length)later(botTurn,D())
+}
+function next(){
+  const pv=G.players[G.turn].n;
+  G.players.forEach(p=>p.hand.forEach(c=>{c.nw=false;c.mk=false;c.hd=false}));
+  G.tc++;G.headTaken=null;G.turn=(G.turn+1)%G.players.length;G.phase='draw';G.sel.clear();G.must=null;G.stupidWho=null;G.noMeld=!hm(G.turn);
+  G.msg=G.turn==0?'ตาคุณ: จั่วไพ่จากกอง หรือเก็บไพ่จากกองทิ้ง':'ตาของ '+G.players[G.turn].n;
+  if(debug){G.paused=true;G.msg='จบตา '+pv+' — แตะที่ว่างเพื่อไปต่อ ('+(G.turn==0?'ถึงตาคุณ':'ถึงตา '+G.players[G.turn].n)+')'}
+  render();if(G.turn)later(botTurn,D()/2)
+}
+function finish(o){o.pg=0;G.over=o;G.broke=mode=='coin'?G.players.filter(p=>p.score<100).map(p=>p.n):[];render()}
+
+function knock(i,c,kw){
+  const w=G.players[i],L=G.players.map((_,j)=>j).filter(j=>j!=i);
+  const cs=[...G.melds.filter(m=>m.o==i).flatMap(m=>m.cards),c],same=cs.every(x=>x.s==cs[0].s),dark=G.noMeld;
+  const mult=dark?(same?5:4):(same?3:1);
+  const mx=j=>Math.max(0,...G.players[j].hand.map(x=>R(x)*4+3-x.s));
+  const order=[...L].sort((a,b)=>hp(b)-hp(a)||mx(b)-mx(a));
+  let gain=0;
+  const TG=L.length==3?['เสียน้อย','เสียกลาง','เสียมาก']:L.length==2?['เสียน้อย','เสียมาก']:['เสียมาก'],pay=[];
+  order.forEach((j,k)=>{const amt=(mode=='coin'?100*(k+1):hp(j))*mult;G.players[j].score-=amt;gain+=amt;pay.push({n:G.players[j].n,pts:hp(j),amt,tag:TG[k]||'เสียมาก'})});
+  w.score+=gain;
+  if(kw)recvAll(i,200);
+  const sw=G.stupidWho,st=sw!=null&&sw!=i;
+  if(st)payAll(sw,200);
+  const am=[];
+  L.forEach(j=>{const nn=G.players[j].hand.filter(isSp).length;if(nn){const dk=!hm(j),each=(dk?400:200)*nn;payAll(j,each);am.push({n:G.players[j].n,dk,each})}});
+  nextStart=i;
+  finish({w:i,mult,dark,same,gain,kw,am,pay,stupid:st?G.players[sw].n:null});
+}
+function endDeck(){
+  const net=j=>G.melds.filter(m=>m.o==j).flatMap(m=>m.cards).reduce((s,x)=>s+val(x),0)-hp(j);
+  const ord=G.players.map((_,j)=>j).sort((a,b)=>net(b)-net(a)||Math.random()-.5);
+  const w=ord[0];let gain=0;
+  const TG=ord.length==4?['เสียน้อย','เสียกลาง','เสียมาก']:ord.length==3?['เสียน้อย','เสียมาก']:['เสียมาก'],pay=[];
+  ord.slice(1).forEach((j,k)=>{const amt=mode=='coin'?100*(k+1):net(w)-net(j);G.players[j].score-=amt;gain+=amt;pay.push({n:G.players[j].n,pts:net(j),amt,tag:TG[k]||'เสียมาก'})});
+  G.players[w].score+=gain;nextStart=w;
+  finish({w,deck:true,gain,mult:1,pay});
+}
+function pages(o){
+  const w=G.players[o.w],u=mode=='coin'?' รูน':' แต้ม',P=[];
+  P.push(o.deck?`<div class="knock" style="font-size:34px">กองไพ่หมด</div><div>${w.n} ชนะ (แต้มสุทธิสูงสุด)</div>`:`<div class="knock">น็อค${o.dark?'มืด':''}!</div><div>${w.n} ชนะ ×${o.mult}</div><div class="tag">${o.dark?'ไม่เคยลงชุดมาก่อนในตานั้น':'น็อคปกติ'} · ${o.same?'ดอกเดียวกันทั้งหมด':'ต่างดอก'}</div>`);
+  P.push(`<div class="tag">ไพ่ที่เหลือในมือ</div><div class="sd">${G.players.map(p=>`<div class="sdr"><span>${p.e} <b>${p.n}</b></span><div class="cs">${p.hand.length?p.hand.map(c=>face(c,'s')).join(''):'<span style="opacity:.6">หมดมือ</span>'}</div></div>`).join('')}</div>`);
+  P.push(`<div class="tag">สรุปการจ่าย${o.deck?'':'หลังน็อค'}</div><div class="sd">${o.pay.map(a=>`<div class="sdr"><span><b>${a.tag}</b> ${a.n}</span><span>${o.deck?'แต้มสุทธิ':'แต้มในมือ'} ${a.pts}</span><span class="neg">จ่าย ${a.amt}${u}</span></div>`).join('')}</div><div>${w.n} ได้รวม <b style="color:var(--gold)">+${o.gain}${u}</b></div>`);
+  if(o.kw)P.push(`<div class="knock" style="font-size:34px">คว่ำมี่!</div><div>${w.n} น็อคด้วยไพ่ที่ต่อกับชุดบนโต๊ะได้</div><div class="tag">ได้รอบวงคนละ 200</div>`);
+  if(o.stupid)P.push(`<div class="knock" style="font-size:34px;color:#ff8a80">ตีโง่!</div><div>${o.stupid} ทิ้งไพ่ให้คนถัดไปเก็บไปเกิดแล้วน็อค</div><div class="tag bad">จ่ายรอบวงคนละ 200</div>`);
+  (o.am||[]).forEach(a=>P.push(`<div class="knock" style="font-size:34px;color:#ff8a80">${a.dk?'อมมืด':'อม'}!</div><div>${a.n} ถือสเปรโตค้างในมือตอนมีคนน็อค</div><div class="tag bad">จ่ายรอบวงคนละ ${a.each}</div>`));
+  P.push(`<div class="tag">ผลรอบนี้</div><div class="sd">${G.players.map((p,j)=>{const d=p.score-G.start[j];return `<div class="sdr"><span>${p.e} <b>${p.n}</b></span><span class="${d<0?'neg':''}">${d>0?'+':''}${d}</span><span>รวม ${sc(p)}</span></div>`}).join('')}</div>${G.broke&&G.broke.length?`<div class="tag bad">ล้มละลาย: ${G.broke.join(', ')} — เกมจบ</div><div class="rows"><button class="btn" data-a="menu">กลับเมนู</button></div>`:`<div class="rows"><button class="btn" data-a="again">เล่นรอบต่อไป</button><button class="btn alt" data-a="menu">เมนู</button></div>`}`);
+  return P}
+// ทิ้งไพ่ คืนค่า true ถ้าเป็นการน็อค
+function discardCard(i,c){
+  const p=G.players[i];p.hand=p.hand.filter(x=>x!==c);c.hd=false;
+  const out=!p.hand.length,tm=meldable(c),fl=!tm&&!out&&full(c);
+  const py=!out&&G.discard.filter(isSp).some(s=>helper(c,s));
+  const gr=!out&&!py&&G.players.some((q,j)=>j!=i&&shownBy(j).some(s=>helper(c,s)));
+  G.discard.push(c);G.lastDisc=i;G.sel.clear();
+  if(out){knock(i,c,tm);return true}
+  const lb=[];
+  if(tm||fl){payAll(i,200);lb.push(tm?'ตีมี่!':'ตีเต็ม!')}
+  if(py||gr){G.hot.push({id:c.id,by:i,tc:G.tc,kind:py?'ตีปี้':'ตีกร่าง'});lb.push(py?'ตีปี้!':'ตีกร่าง!')}
+  if(lb.length)banner(p.n+' '+lb.join(' '));
+  G.msg=p.n+' ทิ้ง '+RK[c.r]+SU[c.s];render();return false
+}
+
+function botTurn(){
+  const i=G.turn,p=G.players[i],rid=G.rid,live=()=>G&&G.rid==rid&&!G.over&&G.turn==i;
+  if(!live())return;
+  let pi=-1;
+  const si=G.discard.findIndex((c,k)=>isSp(c)&&checkPick(p.hand,k));
+  if(si>=0)pi=si;else for(let k=Math.max(0,G.discard.length-5);k<G.discard.length;k++)if(checkPick(p.hand,k)){pi=k;break}
+  if(pi>=0&&!G.announced){G.msg=p.n+' เก็บ '+G.discard.slice(pi).map(c=>RK[c.r]+SU[c.s]).join(' ')+' จากกองทิ้ง';G.announced=true;render();return later(botTurn,D()/2)}
+  G.announced=false;
+  if(pi>=0){
+    const orig=[...p.hand];const {x,t}=takePile(p,pi);
+    const mm=useMeld(p.hand,x,orig);
+    if(mm){const mc=sortMeld(mm);G.melds.push({o:i,cards:mc});p.hand=p.hand.filter(c=>!mm.includes(c));born(i,mm,mc)}
+    G.msg=p.n+' เก็บไพ่กองทิ้ง '+t.length+' ใบ';
+  }else if(G.deck.length){p.hand.push(G.deck.pop());G.msg=p.n+' จั่วไพ่'}
+  else return endDeck();
+  render();
+  later(()=>{if(!live())return;
+    const ko=readyToKnock(i);
+    {const ms=findMelds(p.hand);
+      ms.forEach(m=>{if(p.hand.length-m.length>=1&&(ko||!exposed(m,i))){const mc=sortMeld(m);G.melds.push({o:i,cards:mc});p.hand=p.hand.filter(c=>!m.includes(c));born(i,m,mc)}})}
+    for(let go=hm(i);go;){go=false;for(const c of p.hand){if(p.hand.length<2)break;const m=(ko||isSp(c))&&G.melds.find(m=>canLay(m,c));if(m){const an=anch(m,c,i);c.lb=i;c.lt=an.lt;m.cards=sortMeld([...m.cards,c]);p.hand=p.hand.filter(x=>x!==c);born(i,[c],m.cards,an.payer);go=true;break}}}
+    render();
+    later(()=>{if(!live())return;
+      const use=c=>p.hand.filter(x=>x!==c&&(x.r==c.r||near(x,c))).length;
+      const bad=c=>p.hand.length>1?((meldable(c)||full(c)||G.discard.filter(isSp).some(s=>helper(c,s))||G.players.some((q,j)=>j!=i&&shownBy(j).some(s=>helper(c,s))))?1:0)+(isSp(c)?2:0):0;
+      const d=[...p.hand].sort((a,b)=>bad(a)-bad(b)||use(a)-use(b)||val(b)-val(a))[0];
+      if(!discardCard(i,d))later(next,D()/2)
+    },D())
+  },D())
+}
+
+const A={
+  start:v=>{nb=+v;newGame(nb)},
+  menu:()=>{G=null;page=null;render()},
+  page:v=>{page=v||null;render()},
+  mode:()=>{mode=mode=='coin'?'pts':'coin';render()},
+  speed:()=>{speed={slow:'normal',normal:'fast',fast:'slow'}[speed];render()},
+  first:()=>{first=first=='user'?'random':'user';render()},
+  again:()=>round(),
+  closePeek:()=>{G.peek=null;G.dpeek=false;render()},
+  debug:()=>{debug=!debug;if(!debug&&G&&G.paused)G.paused=false;render()},
+  decl:v=>{if(!G.pend||!G.pend.length)return;const id=G.pend.shift();
+    if(v=='1'){G.shown.push(id);recvAll(0,200);banner('คุณโชว์สเปรโต! +'+200*(G.players.length-1),[me().hand.find(c=>c.id==id)])}
+    if(!G.pend.length){G.msg=G.turn==0?'ตาคุณ: จั่วไพ่จากกอง หรือเก็บไพ่จากกองทิ้ง':G.players[G.turn].n+' เริ่มก่อน';if(G.turn)later(botTurn,D())}
+    render()},
+  sel:v=>{if(G.over)return;G.sel.has(+v)?G.sel.delete(+v):G.sel.add(+v);render()},
+  mv:v=>{const h=me().hand,d=+v;if(!G.sel.size)return say('เลือกไพ่ที่จะย้ายก่อน');
+    const idx=h.map((c,i)=>G.sel.has(c.id)?i:-1).filter(i=>i>=0);
+    if(d<0){for(const i of idx)if(i>0&&!G.sel.has(h[i-1].id))[h[i-1],h[i]]=[h[i],h[i-1]]}
+    else for(const i of [...idx].reverse())if(i<h.length-1&&!G.sel.has(h[i+1].id))[h[i+1],h[i]]=[h[i],h[i+1]];
+    render()},
+  deck:()=>{if(!canAct()||G.phase!='draw')return;if(!G.deck.length)return endDeck();{const c=G.deck.pop();c.nw=true;G.scrollEnd=true;me().hand.push(c)}G.phase='play';say('เลือกไพ่เพื่อลงชุด ฝากต่อ หรือทิ้งหนึ่งใบ')},
+  disc:v=>{if(!canAct()||G.phase!='draw')return;const i=+v;if(!(i>=0&&i<G.discard.length))return;
+    if(!checkPick(me().hand,i))return say('เก็บไม่ได้: ไพ่ใบที่เลือกต้องเอาไปเกิดชุดกับไพ่ในมือได้ทันที (ชุดที่มีแต่ไพ่ในกองไม่นับ)');
+    const {x,t}=takePile(me(),i);G.must=x.id;G.phase='play';G.sel.clear();
+    say('เก็บมา '+t.length+' ใบ (กรอบฟ้า) ต้องเอาใบกรอบส้ม '+RK[x.r]+SU[x.s]+' ไปเกิดเป็นชุดกับไพ่ในมือก่อนทิ้ง')},
+  meld:()=>{if(!canAct()||G.phase!='play')return;const c=picked();
+    if(c.length<3||!ok(c))return say('ชุดไพ่ไม่ถูก: เลขเดียวกัน 3-4 ใบ หรือเรียงกันดอกเดียวกัน 3 ใบขึ้นไป (A ใหญ่สุด เรียงได้แค่ Q-K-A)');
+    if(me().hand.length-c.length<1)return say('ต้องเหลือไพ่หนึ่งใบไว้ทิ้งเพื่อน็อค');
+    if(c.some(x=>x.id==G.must)&&c.every(x=>x.nw))return say('ใบที่เก็บมาต้องเกิดชุดโดยมีไพ่จากในมืออย่างน้อยหนึ่งใบ');
+    const mc=sortMeld(c);me().hand=me().hand.filter(x=>!c.includes(x));G.melds.push({o:0,cards:mc});G.sel.clear();
+    if(c.some(x=>x.id==G.must))G.must=null;born(0,c,mc);say('ลงชุดแล้ว')},
+  lay:v=>{if(!canAct()||G.phase!='play')return;const c=picked(),m=G.melds[+v];
+    if(!c.length)return say('เลือกไพ่ที่จะวางต่อก่อน');
+    if(c.some(x=>x.id==G.must))return say('ใบที่เก็บมาต้องเอาไปเกิดชุดกับไพ่ในมือ ฝากต่ออย่างเดียวไม่ได้');
+    if(!hm(0))return say('ต้องลงชุดของตัวเองก่อน ถึงจะฝากต่อชุดอื่นได้');
+    if(me().hand.length-c.length<1)return say('ต้องเหลือไพ่หนึ่งใบไว้ทิ้งเพื่อน็อค');
+    if(!tryLay(m,c))return say('ไพ่ใบนี้วางต่อชุดนั้นไม่ได้');
+    const cur={o:m.o,cards:m.cards},pm={};
+    for(const x of [...c].sort((a,b)=>R(a)-R(b))){const an=anch(cur,x,0);x.lb=0;x.lt=an.lt;pm[x.id]=an.payer;cur.cards=sortMeld([...cur.cards,x])}
+    m.cards=cur.cards;me().hand=me().hand.filter(x=>!c.includes(x));G.sel.clear();
+    c.forEach(x=>born(0,[x],cur.cards,pm[x.id]));say('วางต่อแล้ว')},
+  layauto:()=>{if(!canAct()||G.phase!='play')return;const c=picked();
+    if(!c.length)return say('เลือกไพ่ที่จะฝากก่อน แล้วกดที่พื้นที่ของคุณ');
+    const k=G.melds.findIndex(m=>tryLay(m,c));
+    if(k<0)return say('ไพ่ที่เลือกฝากต่อชุดไหนบนโต๊ะไม่ได้');
+    A.lay(String(k))},
+  ovnext:()=>{if(G.over){G.over.pg=(G.over.pg||0)+1;render()}},
+  drop:()=>{if(!canAct()||G.phase!='play')return;const c=picked();
+    if(G.must&&me().hand.some(x=>x.id==G.must))return say('ต้องเอาไพ่ที่เก็บมาจากกองทิ้งไปเกิดเป็นชุดก่อน');
+    if(c.length!=1)return say('เลือกไพ่ที่จะทิ้งหนึ่งใบ');
+    if(!discardCard(0,c[0]))later(next,700)}
+};
+let supp=false,pressT=null;
+app.onclick=e=>{if(supp){supp=false;return}const t=e.target.closest('[data-a]');if(t){A[t.dataset.a](t.dataset.v);return}
+  if(G&&!G.over&&!(G.pend&&G.pend.length)&&e.target.closest('.table')&&!e.target.closest('button,.ov,.pod,.meld,.c')){G.paused=!G.paused;render()}};
+app.onpointerdown=e=>{supp=false;clearTimeout(pressT);if(!G||G.over)return;
+  const t=e.target.closest('[data-bot]'),d=debug&&e.target.closest('[data-deckpeek]');
+  if(t){const b=+t.dataset.bot;pressT=setTimeout(()=>{if(G){G.peek=b;supp=true;render()}},5000)}
+  else if(d){pressT=setTimeout(()=>{if(G){G.dpeek=true;supp=true;render()}},5000)}};
+['onpointerup','onpointercancel','onpointerleave'].forEach(k=>app[k]=()=>clearTimeout(pressT));
+app.oncontextmenu=e=>{if(e.target.closest('.pod'))e.preventDefault()};
+let dragId=null;
+app.ondragstart=e=>{const t=e.target.closest('[data-hid]');if(t){dragId=+t.dataset.hid;e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text','x')}};
+app.ondragover=e=>{if(dragId!==null&&e.target.closest('[data-hid]'))e.preventDefault()};
+app.ondrop=e=>{const t=e.target.closest('[data-hid]');if(dragId===null||!t)return;e.preventDefault();const h=me().hand,f=h.findIndex(c=>c.id==dragId),o=h.findIndex(c=>c.id==+t.dataset.hid);if(f>=0&&o>=0&&f!=o){const[c]=h.splice(f,1);h.splice(o,0,c)}dragId=null;render()};
+app.ondragend=()=>{dragId=null};
+
+const card=(c,x='')=>`<button class="c ${c.s%3?'r':''} ${isSp(c)?'sp':''} ${c.hd?'head':''} ${c.nw?'nw':''} ${c.mk?'must':''} ${x}" draggable="true" data-hid="${c.id}" data-a="sel" data-v="${c.id}" aria-label="${RK[c.r]} ${SU[c.s]}">${RK[c.r]}<i>${SU[c.s]}</i></button>`;
+const face=(c,x='')=>`<div class="c ${c.s%3?'r':''} ${G&&isSp(c)?'sp':''} ${c.hd?'head':''} ${x}">${RK[c.r]}<i>${SU[c.s]}</i></div>`;
+const back=(x='')=>`<div class="c b ${x}"></div>`;
+const sc=p=>mode=='coin'?`<span class="sc ${p.score<0?'neg':''}">${p.score.toLocaleString()} รูน</span>`:`<span class="sc ${p.score<0?'neg':p.score>0?'pos':''}">${p.score>0?'+':''}${p.score}</span>`;
+function mdiv(m,k,mine,sz='s'){return`<div class="meld ${mine?'tgt':''}" ${mine?`tabindex="0" role="button" data-a="lay" data-v="${k}"`:''}>${m.cards.map(c=>face(c,sz)).join('')}</div>`}
+function zone(j,mine,sz){let out='';
+  G.melds.forEach((m,k)=>{
+    if(m.o==j){const base=m.cards.filter(c=>c.lb==null||(c.lb==j&&c.lt==j));if(base.length)out+=mdiv({cards:base},k,mine,sz)}
+    const g={};m.cards.filter(c=>c.lb==j&&c.lt!=j).forEach(c=>(g[c.lt]=g[c.lt]||[]).push(c));
+    Object.keys(g).forEach(t=>out+=`<div class="meld lay"><span class="lbl">ฝากต่อ ${G.players[+t].n}</span>${g[t].map(c=>face(c,sz)).join('')}</div>`)});
+  return out}
+const melds=(i,mine,sz)=>G.melds.map((m,k)=>m.o==i?mdiv(m,k,mine,sz):'').join('');
+function pod(i,pos,mine){const p=G.players[i];
+  return`<div class="pod ${pos} ${G.turn==i&&!G.over?'on':''}" data-bot="${i}"><div class="pcol"><div class="av">${p.e}</div><div>${p.n}</div>${sc(p)}${WP?`<div class="win-pct">ชนะ ~${WP[i]}%</div>`:''}<div class="fan">${p.hand.map(()=>back('s')).join('')}</div><div>${p.hand.length} ใบ</div></div><div class="pm">${zone(i,mine,'s')}</div></div>`}
+
+function pageHtml(){
+  const body=page=='rules'?`<h2 class="ph">กติกาการเล่น</h2><div class="pg">
+<b>พื้นฐาน</b><ul><li>เล่นกับบอท 2-3 ตัว แจก 9 ใบ (3 คน) หรือ 7 ใบ (4 คน)</li><li>ตา: จั่วหรือเก็บกองทิ้ง → ลงชุด/ฝากต่อ → ทิ้งหนึ่งใบ</li><li>เก็บกองทิ้งได้ตั้งแต่ใบที่เลือกถึงใบบนสุด แต่ใบที่เลือกต้องเอาไปเกิดชุดกับไพ่ในมือได้ทันที (ชุดที่มีแต่ไพ่ในกองไม่นับ ฝากต่ออย่างเดียวก็ไม่ได้) ส่วนไพ่ใบอื่นที่เก็บมาแล้วฝากต่อได้ถือเป็นโชคดี</li><li>ชุด: เลขเดียวกัน 3-4 ใบต่างดอก หรือเรียงดอกเดียวกัน 3 ใบขึ้นไป A ใหญ่สุด เรียงได้แค่ Q-K-A</li><li>ฝากต่อชุดของใครก็ได้ แต่ต้องมีชุดของตัวเองก่อน</li></ul>
+<b>น็อค</b><ul><li>น็อค = ทิ้งไพ่ใบสุดท้ายจนหมดมือ</li><li>น็อคมืด (ไม่เคยลงชุดมาก่อนในตานั้น): ดอกเดียวกันทั้งหมด ×5 ต่างดอก ×4</li><li>น็อคปกติ: ดอกเดียวกันทั้งหมด ×3 ต่างดอก ×1</li><li>โหมดเหรียญ: คนที่ไม่ได้น็อคเรียงตามแต้มในมือ มากสุดเสีย 100 รองลงมา 200 น้อยสุด 300 แล้วคูณตัวคูณ</li><li>ถ้ากองจั่วหมดก่อนใครน็อค คนที่มีแต้มสุทธิ (ไพ่ที่ลง − ไพ่ในมือ) มากสุดชนะ</li></ul>
+<b>การตี (จ่าย/ได้ คนละ 200 รอบวง)</b><ul><li>ตีมี่: ทิ้งไพ่ที่ต่อกับชุดบนโต๊ะได้ — เสีย</li><li>ตีเต็ม: ทิ้งไพ่แล้วในกองทิ้งมีไพ่ครบเป็นชุดอยู่ — เสีย</li><li>ตีโง่: ทิ้งไพ่ใบล่าสุดแล้วคนถัดไปเก็บไปเกิดและน็อค — เสีย</li><li>คว่ำมี่: น็อคด้วยไพ่ที่ต่อกับชุดบนโต๊ะได้ — ได้</li></ul>
+<b>เหรียญ</b><ul><li>ทุนเริ่มต้น 5000 รูน ติดลบระหว่างรอบได้</li><li>จบรอบแล้วใครเหลือไม่ถึง 100 รูน ล้มละลาย เกมจบ</li></ul>
+<b>สเปรโตและไพ่หัว (ใบละ 200)</b><ul><li>สเปรโต = 2♣, Q♠ และไพ่หัว (ไพ่ใบแรกที่เปิดหลังแจก มีป้าย "หัว" เป็นหัวแค่ครั้งเดียว ถ้ามีคนเก็บไปแล้วไม่ใช่หัวอีก)</li><li>เกิด: ใครลงสเปรโตเป็นชุดหรือฝากต่อ ทุกคนจ่ายคนละ 200</li><li>ไพ่หัวที่เป็น 2♣ หรือ Q♠ ด้วย ได้ 2 เด้ง (เกิดหัว + เกิดสเปรโต) เป็น 400 ต่อคน</li><li>ต้นรอบ: ใครได้ 2♣ หรือ Q♠ ในมือ เลือกได้ว่าจะเอาเงินหรือไม่ ถ้าเอา ต้องโชว์ไพ่ ได้ 200 จากทุกคนทันที และได้อีกตอนเกิด ถ้าไม่เอาก็ไม่ต้องโชว์</li><li>ตีปี้: ทิ้งไพ่ช่วยทับสเปรโตในกองทิ้ง ถ้าภายในหนึ่งรอบมีคนเก็บไปเกิดโดยใช้ไพ่ใบนั้น คนทิ้งจ่ายผู้เกิดแทนทุกคน (200 × จำนวนคนที่เหลือ)</li><li>ตีกร่าง: ทิ้งไพ่ที่ช่วยสเปรโตซึ่งคนอื่นโชว์ไว้ในมือ ถ้าเจ้าของเกิดด้วยไพ่ใบนั้นภายในหนึ่งรอบ คนทิ้งจ่ายแทนทุกคนเช่นกัน</li><li>ถ้ามีคนฝากสเปรโตต่อชุดที่คนอื่นเกิดไว้ (เช่น ชุด 3-4-5♣ ที่ฝาก 2♣ ได้) เจ้าของไพ่ใบที่สเปรโตต่อด้วยจ่ายผู้ฝากคนเดียว 200 × จำนวนคนที่เหลือ (เช่น 600 เมื่อเล่น 4 คน) ถือว่าจบ ไม่เก็บจากคนอื่นอีก</li><li>ชุดที่ฝากสเปรโตต่อได้ (เช่น ตอง Q ที่ไม่มี Q♠ ตอง 2 ที่ไม่มี 2♣) ไม่นิยมเกิด เว้นแต่เกิดแล้วน็อคทันที (บอทเลี่ยงตามนี้)</li><li>บอทฝากต่อไพ่เฉพาะตอนที่ฝากแล้วน็อคได้ในตานั้น หรือฝากสเปรโตเท่านั้น</li><li>อม: ตอนมีคนน็อค ใครถือสเปรโตค้างในมือ จ่ายรอบวงคนละ 200 ต่อใบ ถ้ายังไม่เคยเกิดเลยเป็น อมมืด จ่ายคนละ 400 ต่อใบ</li></ul>
+<b>การควบคุม</b><ul><li>แตะที่ว่างบนโต๊ะเพื่อหยุดเกม แตะอีกครั้งเพื่อเล่นต่อ</li><li>กดค้างที่รูปบอท 5 วินาทีเพื่อแอบดูไพ่ในมือ</li><li>โหมดดีบั๊ก (ปุ่มข้างเมนู): หยุดทุกครั้งที่จบตา แตะที่ว่างเพื่อไปต่อ โชว์ % ชนะโดยประมาณ และกดค้างที่กองจั่ว 5 วินาทีเพื่อดูไพ่ในกองตามลำดับ</li></ul></div>`:`<h2 class="ph">ผู้พัฒนา</h2><dl class="dv"><dt>ชื่อเกม</dt><dd>${DEV.game}</dd><dt>ผู้พัฒนา</dt><dd>${DEV.dev}</dd><dt>วันที่</dt><dd>${DEV.date}</dd><dt>เวอร์ชัน</dt><dd>${DEV.ver}</dd></dl><p class="rules">© ISAMARE1976</p>`;
+  return`<div class="table" style="display:flex"><div class="ov" style="position:static;flex:1;overflow-y:auto;justify-content:flex-start">${body}<button class="btn" data-a="page" data-v="">กลับ</button></div></div>`}
+
+function render(){
+  if(!G&&page){app.innerHTML=pageHtml();return}
+  if(!G){app.innerHTML=`<div class="table" style="display:flex"><div class="ov" style="position:static;flex:1"><h1 class="title">ดัมมี่</h1>
+<div class="rows"><button class="btn alt" data-a="mode">โหมด: ${mode=='coin'?'เหรียญ':'นับแต้ม'}</button><button class="btn alt" data-a="speed">บอทเล่น: ${SPN[speed]}</button><button class="btn alt" data-a="first">ผู้เริ่มก่อน: ${first=='user'?'ผู้เล่น':'สุ่ม'}</button></div>
+<div class="rows"><button class="btn" data-a="start" data-v="2">เล่นกับ 2 บอท</button><button class="btn" data-a="start" data-v="3">เล่นกับ 3 บอท</button></div>
+<div class="rows"><button class="btn alt" data-a="page" data-v="rules">กติกาการเล่น</button><button class="btn alt" data-a="page" data-v="dev">ผู้พัฒนา</button></div></div></div>`;return}
+  const n=G.players.length,slot=n==3?['','left','right']:['','left','top','right'];
+  const mine=G.phase=='play'&&canAct(),hand=me().hand,pk=canAct()&&G.phase=='draw',o=G.over;
+  WP=debug?winPct():null;
+  const hs0=app.querySelector&&app.querySelector('.hand'),sl0=hs0?hs0.scrollLeft:0;
+  app.innerHTML=`<div class="table">
+  ${G.banner?`<div class="action-banner">${G.banner}${G.bcs&&G.bcs.length?`<div class="bc">${G.bcs.map(c=>face(c,'m')).join('')}</div>`:''}</div>`:''}
+  ${G.players.slice(1).map((p,k)=>pod(k+1,slot[k+1],mine)).join('')}
+  <div class="mid">
+    <div class="piles">
+      <button class="pile" style="background:none;border:0" data-a="deck" data-deckpeek="1" aria-label="จั่วจากกอง">${back()}<span>กองจั่ว ${G.deck.length}</span></button>
+      <div class="pile"><div class="dis ${pk?'pk':''}">${G.discard.length?G.discard.map((c,i)=>{const t=i==G.discard.length-1?'top':'';return pk?`<button class="c m ${t} ${c.s%3?'r':''} ${isSp(c)?'sp':''} ${c.id==G.headId?'head':''}" data-a="disc" data-v="${i}" aria-label="เก็บไพ่ตั้งแต่ใบนี้ถึงใบบนสุด">${RK[c.r]}<i>${SU[c.s]}</i></button>`:face(c,'m '+t+(c.id==G.headId?' head':''))}).join(''):'<div class="c m e"></div>'}</div><span>กองทิ้ง ${G.discard.length} ใบ (กดใบไหนก็ได้ เพื่อเก็บใบนั้นถึงใบบนสุด)</span></div>
+    </div>
+    <div class="say" role="status">${G.msg}</div>
+  </div>
+  <div class="hz">
+    <div class="melds mz" data-a="layauto">${zone(0,mine,'m')}</div>
+    <div class="me"><div class="av">${me().e}</div><span>${me().n}</span>${sc(me())}${WP?`<span class="win-pct">ชนะ ~${WP[0]}%</span>`:''}${G.turn==0&&!o?'<span style="color:var(--gold)">ถึงตาคุณ</span>':''}</div>
+    <div class="hand">${hand.map(c=>card(c,G.sel.has(c.id)?'sel':'')).join('')}</div>
+    <div class="bar"><button class="btn" data-a="meld" ${mine?'':'disabled'}>ลงชุด</button><button class="btn" data-a="drop" ${mine?'':'disabled'}>ทิ้งไพ่</button><button class="btn alt" data-a="mv" data-v="-1" aria-label="ย้ายไพ่ที่เลือกไปซ้าย">◀</button><button class="btn alt" data-a="mv" data-v="1" aria-label="ย้ายไพ่ที่เลือกไปขวา">▶</button><button class="btn alt" data-a="menu">เมนู</button><button class="btn alt ${debug?'on':''}" data-a="debug">ดีบั๊ก: ${debug?'เปิด':'ปิด'}</button></div>
+  </div>
+  ${G.paused?`<div class="pausebar">⏸ ${debug?'โหมดดีบั๊ก':'หยุดเกมชั่วคราว'} — แตะที่ว่างเพื่อไปต่อ</div>`:''}
+  ${G.dpeek?`<div class="ov" style="z-index:20;overflow-y:auto"><div class="tag">กองจั่ว ${G.deck.length} ใบ (บนสุด → ล่างสุด)</div><div class="rows" style="max-width:760px;gap:6px">${[...G.deck].reverse().map((c,i)=>`<div class="dk"><small>${i+1}</small>${face(c,'s')}</div>`).join('')}</div><button class="btn" data-a="closePeek">ปิด</button></div>`:''}
+  ${G.peek!=null?`<div class="ov" style="z-index:20"><div class="tag">🕵️ ไพ่ของ ${G.players[G.peek].n}</div><div class="rows">${G.players[G.peek].hand.map(c=>face(c)).join('')}</div><button class="btn" data-a="closePeek">ปิด</button></div>`:''}
+  ${G.pend&&G.pend.length&&!o?`<div class="ov"><div class="tag">คุณได้ไพ่สเปรโต</div>${face(me().hand.find(c=>c.id==G.pend[0]))}<div style="max-width:24em;font-size:14px">เอาเงินคนละ 200 จากทุกคนทันที โดยต้องโชว์ไพ่ใบนี้ให้ทุกคนเห็นตลอดรอบ หรือไม่เอาและไม่ต้องโชว์?</div><div class="rows"><button class="btn" data-a="decl" data-v="1">เอาเงิน (โชว์ไพ่)</button><button class="btn alt" data-a="decl" data-v="0">ไม่เอา</button></div></div>`:''}
+  ${o?(()=>{const P=pages(o),pg=Math.min(o.pg||0,P.length-1),last=pg==P.length-1;return `<div class="ov" ${last?'':'data-a="ovnext"'} style="overflow-y:auto;cursor:${last?'default':'pointer'}">${P[pg]}${last?'':`<div class="tag" style="opacity:.8">แตะที่หน้าจอเพื่อดูต่อ (${pg+1}/${P.length})</div>`}</div>`})():''}
+  </div>`;
+  const h2=app.querySelector&&app.querySelector('.hand');if(h2){h2.scrollLeft=G.scrollEnd?h2.scrollWidth:sl0;G.scrollEnd=false}
+}
+render();
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js").catch(err => {
+      console.warn("Service worker registration failed:", err);
+    });
+  });
+}
+</script>
+
+</body>
+</html>
